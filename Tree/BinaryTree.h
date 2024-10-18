@@ -25,6 +25,7 @@ public:
 	void print() const;
 	vector<int> BFS() const;
 	int treeHeight() { return this->getHeight(this->root_node); }
+	void remove(int x);
 
 private:
 	Node* root_node = nullptr;
@@ -141,4 +142,62 @@ int BinaryTree::getHeight(const Node* node) const
 	int right_height = getHeight(node->right);
 
 	return height = max(left_height, right_height) + 1;
+}
+
+void BinaryTree::remove(int x)
+{
+	if (this->root_node == nullptr) { cout << "the root node is empty"; return; }
+
+	Node* cur = this->root_node; Node* pre = nullptr;
+	while (cur != nullptr)
+	{
+		if (cur->data == x) break;
+
+		else if (cur->data < x)
+		{
+			pre = cur;
+			cur = cur->right;
+		}
+		else
+		{
+			pre = cur;
+			cur = cur->left;
+		}
+	}
+
+	if (cur == nullptr)
+	{
+		cout << "can not find the value in the tree" << endl;
+	}
+	if (cur->left == nullptr || cur->right == nullptr)
+	{
+		Node* temp = cur->left == nullptr ? cur->right : cur->left;
+		if (cur != this->root_node)
+		{
+			if (pre->left == cur)
+			{
+				pre->left = temp;
+			}
+			else if (pre->right == cur)
+			{
+				pre->right = temp;
+			}
+		}
+		else
+			this->root_node = temp;
+		delete cur;
+	}
+	else
+	{
+		Node* temp = cur->right;
+		while (temp->left)
+		{
+			temp = temp->left;
+		}
+		int temp_value = temp->data;
+		this->remove(temp_value);
+		cur->data = temp_value;
+	}
+
+
 }
