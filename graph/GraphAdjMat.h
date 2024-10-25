@@ -1,6 +1,7 @@
 #pragma once
 #include<iostream>
 #include<vector>
+#include<initializer_list>
 
 using namespace std;
 
@@ -10,6 +11,7 @@ private:
 	vector<vector<int>> adjMat;
 public:
 	GraphAdjMat(const vector<int>&, const vector<vector<int>>&);
+	//GraphAdjMat(const initializer_list<int>&);
 	int size();
 	void addVertex(int);
 	void addEdge(int, int);
@@ -17,6 +19,11 @@ public:
 	void removeVertex(int);
 	void print();
 };
+
+int GraphAdjMat::size()
+{
+	return vertices.size();
+}
 
 GraphAdjMat::GraphAdjMat(const vector<int>& vertices, const vector<vector<int>>& edges)
 {
@@ -26,15 +33,18 @@ GraphAdjMat::GraphAdjMat(const vector<int>& vertices, const vector<vector<int>>&
 	}
 	for (vector<int> edge : edges)
 	{
-		addEdge(edge[0], edge[1]);
+		auto it_x = find(this->vertices.begin(), this->vertices.end(), edge[0]);
+		auto it_y = find(this->vertices.begin(), this->vertices.end(), edge[1]);
+
+		int index_x = distance(this->vertices.begin(), it_x);
+		int index_y = distance(this->vertices.begin(), it_y);
+
+		addEdge(index_x, index_y);
 	}
 }
 
 void GraphAdjMat::addEdge(int i, int j)
 {
-	if (i < 0 || j < 0 || i >= size() || j >= size() || i == j) {
-		throw out_of_range("顶点不存在");
-	}
 	adjMat[i][j] = 1;
 	adjMat[j][i] = 1;
 }
@@ -54,7 +64,7 @@ void GraphAdjMat::addVertex(int x)
 void GraphAdjMat::removeEdge(int i,int j)
 {
 	if (i < 0 || j < 0 || i >= size() || j >= size() || i == j) {
-		throw out_of_range("顶点不存在");
+		cout << "顶点不存在" << endl;
 	}
 	adjMat[i][j] = 0;
 	adjMat[j][i] = 0;
@@ -73,4 +83,33 @@ void GraphAdjMat::removeVertex(int x)
 	{
 		vertex.erase(vertex.begin() + index);
 	}
+}
+
+void GraphAdjMat::print()
+{
+	cout << "vertices:";
+	for (auto val : this->vertices)
+	{
+		cout << val << " ";
+	}
+	cout << endl;
+
+	int n = this->adjMat.size();
+	vector<pair<int, int>> pair;
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = i; j < n; j++)
+		{
+			if (adjMat[i][j] == 1)
+			{
+				pair.push_back({ i,j });
+			}
+		}
+	}
+	cout << "edges:";
+	for (auto p : pair)
+	{
+		cout << "{" << vertices[p.first] << "," << vertices[p.second] << "}" << " ";
+	}
+	cout << endl;
 }
