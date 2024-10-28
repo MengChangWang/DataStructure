@@ -6,5 +6,8 @@ int main()
 	vector<vector<int>> edges{ {1,3},{1,5},{2,3},{2,5},{4,5},{4,2} };
 	GraphAdjMat graph(vertices, edges);
 	graph.print();
+	graph.removeEdge(4, 5);
+	graph.print();
+
 	return 0;
 }

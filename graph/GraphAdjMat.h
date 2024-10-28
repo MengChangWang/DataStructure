@@ -13,8 +13,8 @@ public:
 	GraphAdjMat(const vector<int>&, const vector<vector<int>>&);
 	//GraphAdjMat(const initializer_list<int>&);
 	int size();
-	void addVertex(int);
-	void addEdge(int, int);
+	void addVertex(int);//添加顶点
+	void addEdge(int, int);//添加边(联系) 以顶点的索引作为key 01作为value
 	void removeEdge(int, int);
 	void removeVertex(int);
 	void print();
@@ -61,8 +61,17 @@ void GraphAdjMat::addVertex(int x)
 	}
 }
 
-void GraphAdjMat::removeEdge(int i,int j)
+void GraphAdjMat::removeEdge(int x,int y)
 {
+	if (count(vertices.begin(), vertices.end(), x) == 0) {cout << "顶点不存在" << endl; return;}
+	if (count(vertices.begin(), vertices.end(), y) == 0) { cout << "顶点不存在" << endl; return; }
+
+	auto it_i = find(vertices.begin(),vertices.end(),x);
+	auto it_j = find(vertices.begin(),vertices.end(),y);
+
+	int i = distance(vertices.begin(), it_i);
+	int j = distance(vertices.begin(), it_j);
+
 	if (i < 0 || j < 0 || i >= size() || j >= size() || i == j) {
 		cout << "顶点不存在" << endl;
 	}
