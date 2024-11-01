@@ -3,10 +3,24 @@
 #include<unordered_map>
 #include<vector>
 
+#include<unordered_set>
 using namespace std;
 //目前尚不支持自定义类型
 template <typename T>
 class GraphAdjList {
+	struct PairHash {
+		size_t operator()(const pair<T, T>& pair) const {
+			return hash<T>()(std::min(pair.first, pair.second)) ^
+				hash<T>()(std::max(pair.first, pair.second));
+		}
+	};
+
+	struct PairEqual {
+		bool operator()(const pair<T, T>& a, const std::pair<T, T>& b) const {
+			return min(a.first, a.second) == min(b.first, b.second) &&
+				max(a.first, a.second) == max(b.first, b.second);
+		}
+	};
 private:
 	unordered_map<T, vector<T>> graph;
 public:
@@ -14,15 +28,17 @@ public:
 	int size();
 	void addVertex(T);
 	void addEdge(T, T);//直接以值作为key
-	void removeEdge(T,T);
+	void removeEdge(T, T);
 	void removeVertex(T);
 	void print();
 private:
 	void remove(vector<T>&, T);
 };
 
+
+
 template <typename T>
-GraphAdjList<T>::GraphAdjList(const vector<T>& vertices, const vector<vector<T>> &edges)
+GraphAdjList<T>::GraphAdjList(const vector<T>& vertices, const vector<vector<T>>& edges)
 {
 	for (T vertex : vertices)
 	{
@@ -43,7 +59,7 @@ void GraphAdjList<T>::addVertex(T data)
 }
 
 template <typename T>
-void GraphAdjList<T>::addEdge(T x,T y)
+void GraphAdjList<T>::addEdge(T x, T y)
 {
 	if (!this->graph.count(x) || !this->graph.count(y) || x == y)
 	{
@@ -90,7 +106,9 @@ void GraphAdjList<T>::removeVertex(T data)
 	this->graph.erase(it);
 	for (auto& temp : this->graph)
 	{
-		remove(temp.second, data);
+		int flag = count(temp.second.begin(), temp.second.end(), data);
+		if (flag)
+			remove(temp.second, data);
 	}
 }
 
@@ -104,13 +122,13 @@ void GraphAdjList<T>::print()
 	}
 	cout << endl;
 	cout << "edges";
-	vector<pair<T, T>> _edges;
+	unordered_set<pair<T, T>,GraphAdjList<T>::PairHash,GraphAdjList<T>::PairEqual> _edges;
 	for (auto& temp : this->graph)
 	{
 		vector<T>& temp_vector = temp.second;
 		for (T& x : temp_vector)
 		{
-			_edges.push_back({ temp.first,x });
+			_edges.insert({ temp.first,x });
 		}
 	}
 
