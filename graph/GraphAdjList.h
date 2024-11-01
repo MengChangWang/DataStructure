@@ -90,6 +90,8 @@ void GraphAdjList<T>::removeVertex(T data)
 	this->graph.erase(it);
 	for (auto& temp : this->graph)
 	{
+		int flag = count(temp.second.begin(),temp.second.end(),data);
+		if(flag)
 		remove(temp.second, data);
 	}
 }
