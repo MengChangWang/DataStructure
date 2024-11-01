@@ -2,6 +2,7 @@
 #include<iostream>
 #include<vector>
 #include<initializer_list>
+#include<unordered_set>
 
 using namespace std;
 
@@ -19,6 +20,10 @@ public:
 	void removeVertex(int);
 	void print();
 };
+
+
+
+
 
 int GraphAdjMat::size()
 {
