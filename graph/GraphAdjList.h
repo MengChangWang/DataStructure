@@ -17,6 +17,8 @@ public:
 	void removeEdge(T,T);
 	void removeVertex(T);
 	void print();
+private:
+	void remove(vector<T>&, T);
 };
 
 template <typename T>
@@ -35,13 +37,19 @@ GraphAdjList<T>::GraphAdjList(const vector<T>& vertices, const vector<vector<T>>
 template <typename T>
 void GraphAdjList<T>::addVertex(T data)
 {
-	this->graph[data]
+	if (this->graph.count(data)) return;
+
+	this->graph[data] = vector<int>{};
 }
 
 template <typename T>
 void GraphAdjList<T>::addEdge(T x,T y)
 {
-	if (this->graph.count(x) == 0 || this->graph.count(y) == 0) return;
+	if (!this->graph.count(x) || !this->graph.count(y) || x == y)
+	{
+		cout << "这两个顶点无法建立联系" << endl;
+		return;
+	}
 
 	this->graph[x].push_back(y);
 	this->graph[y].push_back(x);
@@ -54,6 +62,15 @@ int GraphAdjList<T>::size()
 }
 
 template <typename T>
+void GraphAdjList<T>::remove(vector<T>& list, T x)
+{
+	auto it = find(list.begin(), list.end(), x);
+	int index = distance(list.begin(), it);
+
+	list.erase(it);
+}
+
+template <typename T>
 void GraphAdjList<T>::removeEdge(T x, T y)
 {
 	if (this->graph.count(x) == 0 || this->graph.count(y) == 0)
@@ -61,28 +78,45 @@ void GraphAdjList<T>::removeEdge(T x, T y)
 		cout << "所要删除的边不存在!删除失败" << endl;
 		return;
 	}
-	auto temp_vector = graph[x]; temp_vector.erase(y);
-	temp_vector = graph[y]; temp_vector.erase(x);
+	remove(graph[x], y);
+	remove(graph[y], x);
 }
 
 template <typename T>
 void GraphAdjList<T>::removeVertex(T data)
 {
-	if (this->graph.count(x) == 0 || this->graph.count(y) == 0)
+	auto it = this->graph.find(data);
+	if (it == this->graph.end()) { cout << "该元素不存在" << endl; return; }
+	this->graph.erase(it);
+	for (auto& temp : this->graph)
 	{
-		cout << "所要删除的顶点不存在!删除失败" << endl;
-		return;
-	}
-	this->graph.erase(data);
-	for (vector<T> temp_vector : this->graph)
-	{
-		if(count(temp_vector.begin(),temp_vector.end(),data))
-		temp_vector.erase(data);
+		remove(temp.second, data);
 	}
 }
 
 template <typename T>
 void GraphAdjList<T>::print()
 {
+	cout << "vertices:";
+	for (auto& temp : this->graph)
+	{
+		cout << temp.first << " ";
+	}
+	cout << endl;
+	cout << "edges";
+	vector<pair<T, T>> _edges;
+	for (auto& temp : this->graph)
+	{
+		vector<T>& temp_vector = temp.second;
+		for (T& x : temp_vector)
+		{
+			_edges.push_back({ temp.first,x });
+		}
+	}
 
+	for (auto temp : _edges)
+	{
+		cout << "{" << temp.first << "," << temp.second << "}";
+	}
+	cout << endl;
 }
