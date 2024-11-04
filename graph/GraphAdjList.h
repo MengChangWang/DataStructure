@@ -2,7 +2,7 @@
 #include<iostream>
 #include<unordered_map>
 #include<vector>
-
+#include<queue>
 #include<unordered_set>
 using namespace std;
 //目前尚不支持自定义类型
@@ -30,8 +30,11 @@ public:
 	void addEdge(T, T);//直接以值作为key
 	void removeEdge(T, T);
 	void removeVertex(T);
-	void print();
-
+	void print() { this->printVertices(); this->printEdges(); }
+	void printEdges();
+	void printVertices();
+	void BFS();
+	//void DFS();
 private:
 	void remove(vector<T>&, T);
 };
@@ -113,7 +116,7 @@ void GraphAdjList<T>::removeVertex(T data)
 }
 
 template <typename T>
-void GraphAdjList<T>::print()
+void GraphAdjList<T>::printVertices()
 {
 	cout << "vertices:";
 	for (auto& temp : this->graph)
@@ -122,7 +125,12 @@ void GraphAdjList<T>::print()
 	}
 	cout << endl;
 	cout << "edges";
-	unordered_set<pair<T, T>,GraphAdjList<T>::PairHash,GraphAdjList<T>::PairEqual> _edges;
+}
+
+template <typename T>
+void GraphAdjList<T>::printEdges()
+{
+	unordered_set<pair<T, T>, GraphAdjList<T>::PairHash, GraphAdjList<T>::PairEqual> _edges;
 	for (auto& temp : this->graph)
 	{
 		vector<T>& temp_vector = temp.second;
@@ -135,6 +143,36 @@ void GraphAdjList<T>::print()
 	for (auto temp : _edges)
 	{
 		cout << "{" << temp.first << "," << temp.second << "}";
+	}
+	cout << endl;
+}
+
+template <typename T>
+void GraphAdjList<T>::BFS()
+{
+	vector<T> result;
+	queue<T> tempStor;
+	unordered_set<T> check;
+
+	T start = this->graph.begin()->first;
+	tempStor.push(start);
+	check.insert(start);
+	while (!tempStor.empty())
+	{
+		T vertex = tempStor.front();
+		tempStor.pop();
+		result.push_back(vertex);
+		for (T v : this->graph[vertex])
+		{
+			if (check.count(v)) continue;
+			tempStor.push(v);
+			check.insert(v);
+		}
+	}
+
+	for (T& r : result)
+	{
+		cout << r << " ";
 	}
 	cout << endl;
 }

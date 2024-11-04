@@ -22,9 +22,6 @@ public:
 };
 
 
-
-
-
 int GraphAdjMat::size()
 {
 	return vertices.size();
