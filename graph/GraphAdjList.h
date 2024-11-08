@@ -34,9 +34,11 @@ public:
 	void printEdges();
 	void printVertices();
 	void BFS();
-	//void DFS();
+	void DFS();
+
 private:
 	void remove(vector<T>&, T);
+	void _dfs(vector<T>&, unordered_set<T>&, T&);
 };
 
 
@@ -169,10 +171,35 @@ void GraphAdjList<T>::BFS()
 			check.insert(v);
 		}
 	}
-
 	for (T& r : result)
 	{
 		cout << r << " ";
 	}
 	cout << endl;
+}
+
+template <typename T>
+void GraphAdjList<T>::_dfs(vector<T>& result, unordered_set<T>& check, T& val)
+{
+	result.push_back(val);
+	check.insert(val);
+	for (T& t : this->graph[val])
+	{
+		if (check.count(t)) continue;
+		_dfs(result,check,t);
+	}
+}
+
+template <typename T>
+void GraphAdjList<T>::DFS()
+{
+	unordered_set<T> check;
+	vector<T> result;
+	T value = this->graph.begin()->first;
+	_dfs(result, check, value);
+
+	for (T& t : result)
+	{
+		cout << t << " ";
+	}
 }

@@ -8,9 +8,10 @@ int main()
 	graph.print();
 	graph.removeEdge(4, 5);
 	graph.print();
-	graph.removeVertex(3);
-	graph.print();
+	/*graph.removeVertex(3);
+	graph.print();*/
 	graph.BFS();
+	graph.DFS();
 
 
 	return 0;
