@@ -1,5 +1,6 @@
 #include"GraphAdjList.h"
 
+
 int main()
 {
 	vector<int> vertices{ 1,2,3,4,5,7,10};
@@ -11,8 +12,8 @@ int main()
 	/*graph.removeVertex(3);
 	graph.print();*/
 	graph.BFS();
-	graph.DFS();
-
+	graph.DFS();//是否能形成路径？
 
 	return 0;
 }
+
